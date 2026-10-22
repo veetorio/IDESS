@@ -1,0 +1,38 @@
+@startuml
+
+class Contato {
+    - email : String
+    - telefone : String
+}
+enum Role {
+    ADMIN,
+    COMMON
+}
+class Conta {
+    - nome : String
+    - contato : Contato
+    - senha : String
+    - atividade : Boolean
+    - role : Role
+    - inscricoes : List<Inscricoes> 
+}
+
+class Inscricoes {
+    id : UUID
+    inscrito : Conta
+    evento : Evento
+}
+
+class Evento {
+    - nome : String
+    - descricao : String
+    - imgs : List<Path>
+    - vagasOcupadas : Integer
+    - vagasTotais : Integer
+    - aberto : Boolean
+    - inscritos : List<Inscricoes>
+}
+
+Conta "1" --> "0..*" Inscricoes : "escrevese" 
+Evento "1" --> "0..*" Inscricoes : "inscritos"
+@enduml

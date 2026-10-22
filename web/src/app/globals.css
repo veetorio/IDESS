@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+/* =============================================
+   Design System — Instituto Ettore Sebastianini
+   Paleta 60-20-10-5
+   ============================================= */
+
+:root {
+  /* 60% — Fundo principal */
+  --color-base: #EEFCFF;
+
+  /* 20% — Primária institucional */
+  --color-primary: #2D2E7E;
+  --color-primary-dark: #1f2060;
+  --color-primary-light: #4748a8;
+
+  /* 10% — Verde sustentabilidade */
+  --color-green: #13983F;
+  --color-green-dark: #0e7230;
+  --color-green-light: #18c050;
+
+  /* 5% — Azul complementar */
+  --color-blue: #1370B4;
+  --color-blue-dark: #0f5a91;
+  --color-blue-light: #1a8fe0;
+
+  /* Neutros */
+  --color-neutral-50:  #f9fafb;
+  --color-neutral-100: #f3f4f6;
+  --color-neutral-200: #e5e7eb;
+  --color-neutral-400: #9ca3af;
+  --color-neutral-600: #4b5563;
+  --color-neutral-700: #374151;
+  --color-neutral-900: #111827;
+
+  --background: var(--color-base);
+  --foreground: var(--color-neutral-900);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* Tokens de cor no Tailwind */
+  --color-base: #EEFCFF;
+  --color-primary: #2D2E7E;
+  --color-primary-dark: #1f2060;
+  --color-primary-light: #4748a8;
+  --color-green: #13983F;
+  --color-green-dark: #0e7230;
+  --color-green-light: #18c050;
+  --color-blue: #1370B4;
+  --color-blue-dark: #0f5a91;
+  --color-blue-light: #1a8fe0;
+
+  /* Tipografia */
+  --font-sans: 'DM Sans', 'Inter', sans-serif;
+  --font-display: 'DM Sans', sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+.header-art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse at 8% 140%,
+      color-mix(in srgb, var(--color-green) 52%, transparent),
+      transparent 42%
+    ),
+    radial-gradient(
+      ellipse at 94% -100%,
+      color-mix(in srgb, var(--color-blue-light) 48%, transparent),
+      transparent 58%
+    ),
+    linear-gradient(
+      110deg,
+      var(--color-primary-dark),
+      var(--color-primary) 56%,
+      var(--color-primary-light)
+    );
+}
+
+.header-art::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background-image: radial-gradient(
+    circle,
+    rgb(238 252 255 / 20%) 1px,
+    transparent 1.5px
+  );
+  background-position: right 24px center;
+  background-size: 18px 18px;
+  mask-image: linear-gradient(90deg, transparent 35%, black 100%);
+}
+
+.header-art::after {
+  position: absolute;
+  top: 50%;
+  right: 5%;
+  width: 132px;
+  height: 132px;
+  border: 1px solid rgb(238 252 255 / 18%);
+  border-radius: 50%;
+  content: "";
+  box-shadow:
+    0 0 0 16px rgb(238 252 255 / 5%),
+    0 0 0 34px rgb(19 152 63 / 14%);
+  transform: translateY(-50%);
+}
+
+@keyframes hero-slide {
+  0% {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+  4.17%,
+  26.67% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+  40%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+.hero-slide {
+  animation: hero-slide 12s ease-in-out infinite;
+  opacity: 0;
+}

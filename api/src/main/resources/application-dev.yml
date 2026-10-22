@@ -1,0 +1,8 @@
+spring:
+  jpa:
+    show-sql: true
+
+logging:
+  level:
+    br.org.institutoettore: DEBUG
+    org.springframework.security: DEBUG
