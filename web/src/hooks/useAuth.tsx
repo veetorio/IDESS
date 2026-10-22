@@ -3,94 +3,107 @@
 import {
   createContext,
   useContext,
-  useState,
   useEffect,
+  useState,
   useCallback,
   type ReactNode,
 } from "react";
+import { useRouter } from "next/navigation";
 import type { Conta, LoginPayload, RegisterPayload } from "@/types";
-import { api } from "@/lib/api";
 
-// =============================================
-// Tipos do contexto de autenticação
-// =============================================
+// ----------------------
+// Tipos do contexto
+// ----------------------
 
-interface AuthState {
+interface AuthContextValue {
   usuario: Conta | null;
   carregando: boolean;
-}
-
-interface AuthContextValue extends AuthState {
-  login: (dados: LoginPayload, redirect?: string) => Promise<void>;
+  login: (dados: LoginPayload) => Promise<void>;
   logout: () => Promise<void>;
-  register: (dados: RegisterPayload) => Promise<void>;
+  registrar: (dados: RegisterPayload) => Promise<void>;
 }
 
-// =============================================
+// ----------------------
 // Contexto
-// =============================================
+// ----------------------
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-// =============================================
+// ----------------------
 // Provider
-// =============================================
+// ----------------------
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<AuthState>({
-    usuario: null,
-    carregando: true,
-  });
+  const [usuario, setUsuario] = useState<Conta | null>(null);
+  const [carregando, setCarregando] = useState(true);
+  const router = useRouter();
 
-  // Ao montar, busca os dados do usuário atual via API Route
+  // Hidrata o estado a partir do cookie (via API Route /api/auth/me)
   useEffect(() => {
-    async function verificarSessao() {
-      try {
-        const usuario = await api.get<Conta>("/api/auth/me");
-        setState({ usuario, carregando: false });
-      } catch {
-        // Cookie ausente ou inválido — usuário não autenticado
-        setState({ usuario: null, carregando: false });
-      }
-    }
-    verificarSessao();
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then(({ usuario }) => setUsuario(usuario ?? null))
+      .catch(() => setUsuario(null))
+      .finally(() => setCarregando(false));
   }, []);
 
   const login = useCallback(
-    async (dados: LoginPayload, redirect = "/") => {
-      const { usuario } = await api.post<{ usuario: Conta }>(
-        "/api/auth/login",
-        dados
-      );
-      setState({ usuario, carregando: false });
-      // Navegação do lado do cliente
-      window.location.href = redirect;
+    async (dados: LoginPayload) => {
+      const resposta = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dados),
+      });
+
+      if (!resposta.ok) {
+        const erro = await resposta.json();
+        throw new Error(erro.message ?? "Erro ao fazer login");
+      }
+
+      const { usuario } = await resposta.json();
+      setUsuario(usuario);
+      router.refresh();
+    },
+    [router]
+  );
+
+  const logout = useCallback(async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    setUsuario(null);
+    router.push("/");
+    router.refresh();
+  }, [router]);
+
+  const registrar = useCallback(
+    async (dados: RegisterPayload) => {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+
+      const resposta = await fetch(`${apiUrl}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dados),
+      });
+
+      if (!resposta.ok) {
+        const erro = await resposta.json().catch(() => ({}));
+        throw new Error(
+          (erro as { message?: string }).message ?? "Erro ao criar conta"
+        );
+      }
     },
     []
   );
 
-  const logout = useCallback(async () => {
-    await api.post("/api/auth/logout", {});
-    setState({ usuario: null, carregando: false });
-    window.location.href = "/";
-  }, []);
-
-  const register = useCallback(async (dados: RegisterPayload) => {
-    await api.post("/api/auth/register", dados);
-    // Após cadastro, redireciona para login
-    window.location.href = "/entrar?cadastro=ok";
-  }, []);
-
   return (
-    <AuthContext.Provider value={{ ...state, login, logout, register }}>
+    <AuthContext.Provider value={{ usuario, carregando, login, logout, registrar }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-// =============================================
-// Hook de consumo
-// =============================================
+// ----------------------
+// Hook
+// ----------------------
 
 export function useAuth(): AuthContextValue {
   const ctx = useContext(AuthContext);
