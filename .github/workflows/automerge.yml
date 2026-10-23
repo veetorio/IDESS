@@ -1,0 +1,26 @@
+
+name: Tester to Production
+
+on:
+  push:
+    branches:
+      - tester
+
+permissions:
+  contents: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin
+          git switch -C production origin/production
+          git merge origin/tester --no-edit
+          git push origin production
