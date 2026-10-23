@@ -114,14 +114,14 @@ export default async function HomePage() {
         />
         <div className="relative z-10 max-w-3xl text-center">
           <span className="mb-6 inline-block rounded-full bg-green/20 px-4 py-1.5 text-sm font-semibold uppercase tracking-wide text-green-light">
-            Instituto Social e Sustentável
+            ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL
           </span>
           <h1 className="text-4xl font-bold leading-tight text-white md:text-6xl">
             Transformando vidas,{" "}
             <span className="text-green-light">construindo futuro</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85 md:text-xl">
-            O Instituto Ettore Sebastianini promove iniciativas sociais e
+            O ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL promove iniciativas sociais e
             sustentáveis para o desenvolvimento humano e a inclusão social em
             nossas comunidades.
           </p>

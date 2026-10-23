@@ -7,7 +7,9 @@ RUN mvn -q -DskipTests package
 
 FROM eclipse-temurin:21-jre
 WORKDIR /app
-RUN useradd --system --uid 10001 --create-home appuser
+RUN useradd --system --uid 10001 --create-home appuser \
+    && mkdir -p /app/uploads \
+    && chown appuser:appuser /app/uploads
 COPY --from=build /app/target/api-0.0.1-SNAPSHOT.jar app.jar
 USER appuser
 EXPOSE 8080

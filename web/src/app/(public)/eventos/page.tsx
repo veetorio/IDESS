@@ -7,7 +7,7 @@ import type { PaginatedResponse, Evento } from "@/types";
 
 export const metadata: Metadata = {
   title: "Eventos",
-  description: "Confira todos os eventos do Instituto Ettore Sebastianini e faça sua inscrição.",
+  description: "Confira todos os eventos do ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL e faça sua inscrição.",
 };
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
@@ -65,7 +65,7 @@ export default async function PaginaEventos({ searchParams }: PageProps) {
           </h1>
           <p className="mt-4 max-w-xl text-white/80">
             Inscreva-se nos nossos eventos e faça parte das iniciativas sociais
-            e sustentáveis do Instituto Ettore Sebastianini.
+            e sustentáveis do ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL.
           </p>
         </div>
       </div>

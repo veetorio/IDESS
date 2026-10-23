@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, User, LogOut } from "lucide-react";
+import { Menu, X, User, LogOut, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -62,6 +62,16 @@ export function MobileMenu() {
             <li className="px-6 pt-4 pb-2 border-t border-base/20 mt-2 space-y-2">
               {usuario ? (
                 <>
+                  {usuario.role === "ADMIN" && (
+                    <Link
+                      href="/admin/eventos"
+                      onClick={fechar}
+                      className="flex w-full items-center gap-2 rounded-lg bg-green px-4 py-2.5 font-medium text-white transition-colors hover:bg-green-dark"
+                    >
+                      <Plus className="h-4 w-4" aria-hidden="true" />
+                      Administrar eventos
+                    </Link>
+                  )}
                   <Link
                     href="/minha-conta"
                     onClick={fechar}

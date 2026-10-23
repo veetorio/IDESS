@@ -9,7 +9,7 @@ API REST em Spring Boot 3 e Java 21, com PostgreSQL, Flyway, JWT e BCrypt.
 3. Inicie os serviços com `docker compose up --build`.
 4. A API ficará disponível em `http://localhost:8080`; verifique `/health`.
 
-As migrações do Flyway criam o schema ao iniciar. A conta administrativa só é criada se o e-mail configurado ainda não existir; o cadastro público sempre cria contas `COMMON`.
+As migrações do Flyway criam o schema ao iniciar. A conta administrativa só é criada se o e-mail configurado ainda não existir; o cadastro público sempre cria contas `COMMON`. Imagens enviadas são aceitas em JPEG, PNG ou GIF, até 10 arquivos de 5 MB por evento, e persistidas no volume Docker `evento_imagens`.
 
 ## Executar localmente
 
@@ -29,13 +29,13 @@ O perfil `dev` ativa logs SQL sem apagar ou recriar dados a cada reinicializaç�
 | `POST` | `/auth/login` | Público | Autentica e retorna JWT e usuário |
 | `GET` | `/eventos?page=0&size=9&aberto=true` | Público | Lista eventos paginados; `aberto` é opcional |
 | `GET` | `/eventos/{id}` | Público | Detalha um evento |
-| `POST` | `/eventos` | Admin | Cria evento |
+| `POST` | `/eventos` | Admin | Cria evento; recebe `multipart/form-data` com a parte JSON `evento` e partes `imagens` opcionais |
 | `PUT` | `/eventos/{id}` | Admin | Atualiza evento e permite encerrar inscrições |
 | `GET` | `/inscricoes` | Autenticado | Lista as inscrições da própria conta |
 | `POST` | `/inscricoes` | Conta `COMMON` | Inscreve a conta no evento |
 | `GET` | `/health` | Público | Verifica se a API está respondendo |
 
-Envie o token de login no cabeçalho `Authorization: Bearer <token>`. As imagens dos eventos são armazenadas como caminhos locais (`/caminho/imagem.jpg`) ou URLs HTTP(S); o serviço não recebe upload de arquivos.
+Envie o token de login no cabeçalho `Authorization: Bearer <token>`. Para criar evento, envie o JSON com `nome`, `descricao`, `vagasTotais` e `aberto` na parte `evento`, além de cada arquivo na parte `imagens`. A API retorna os caminhos públicos `/uploads/<nome-gerado>`.
 
 O total de vagas é atualizado na mesma transação da inscrição, com bloqueio do evento para evitar ultrapassar a capacidade em requisições concorrentes. Atualizações administrativas do evento usam o mesmo bloqueio. Somente contas `COMMON` podem se inscrever; uma conta pode se inscrever uma única vez em cada evento.
 

@@ -1,4 +1,4 @@
-# Tasks — Frontend Ettore Sebastianini Instituto Social e Sustentável
+# Tasks — Frontend ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL
 
 ## Fase 1 — Setup e Infraestrutura
 

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Rotas que exigem autenticação
-const ROTAS_PROTEGIDAS = ["/minha-conta"];
+const ROTAS_PROTEGIDAS = ["/minha-conta", "/admin"];
 
 // Rotas de autenticação (redireciona se já logado)
 const ROTAS_AUTH = ["/entrar", "/cadastrar"];

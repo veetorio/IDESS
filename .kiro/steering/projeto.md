@@ -1,8 +1,8 @@
-# Contexto do Projeto — Ettore Sebastianini Instituto Social e Sustentável
+# Contexto do Projeto — ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL
 
 ## Sobre
 
-Site institucional do **Ettore Sebastianini Instituto Social e Sustentável**. O objetivo é divulgar eventos, apresentar o instituto, seus fundadores, programas e patrocinadores, além de permitir que o público geral se inscreva em eventos.
+Site institucional do **ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL**. O objetivo é divulgar eventos, apresentar o instituto, seus fundadores, programas e patrocinadores, além de permitir que o público geral se inscreva em eventos.
 
 ## Repositório
 

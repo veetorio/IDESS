@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LogOut, User, CalendarCheck } from "lucide-react";
+import { LogOut, User, CalendarCheck, Plus } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 
@@ -22,9 +22,14 @@ export function HeaderActions() {
     return (
       <div className="hidden items-center gap-3 xl:flex">
         {/* Nome do usuário */}
-        <span className="hidden text-sm text-white/80 xl:block">
-          Olá, <span className="font-semibold text-white">{usuario.nome.split(" ")[0]}</span>
-        </span>
+        {usuario.role !== "ADMIN" && (
+          <span className="hidden text-sm text-white/80 xl:block">
+            Olá,{" "}
+            <span className="font-semibold text-white">
+              {usuario.nome.split(" ")[0]}
+            </span>
+          </span>
+        )}
 
         {/* Link para inscrições */}
         <Button variant="ghost" size="sm" asChild className="text-white/80 hover:text-white">
@@ -33,6 +38,20 @@ export function HeaderActions() {
             Minhas inscrições
           </Link>
         </Button>
+
+        {usuario.role === "ADMIN" && (
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
+            className="text-white/80 hover:text-white"
+          >
+            <Link href="/admin/eventos">
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              Painel de eventos
+            </Link>
+          </Button>
+        )}
 
         {/* Logout */}
         <Button

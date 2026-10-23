@@ -20,6 +20,10 @@ spring:
 
   flyway:
     enabled: true
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 55MB
 
 server:
   port: ${PORT:8080}
@@ -37,6 +41,8 @@ cors:
   allowed-origins: ${CORS_ORIGINS:http://localhost:3000}
 
 app:
+  upload:
+    dir: ${UPLOAD_DIR:uploads}
   admin:
     email: ${ADMIN_EMAIL:}
     password: ${ADMIN_PASSWORD:}

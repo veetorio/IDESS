@@ -1,8 +1,8 @@
-# Requisitos — Frontend Ettore Sebastianini Instituto Social e Sustentável
+# Requisitos — Frontend ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL
 
 ## Introdução
 
-Site institucional do **Ettore Sebastianini Instituto Social e Sustentável**, com foco em divulgação de eventos, apresentação do instituto e inscrição do público geral. O site é voltado para dois públicos: patrocinadores e público geral.
+Site institucional do **ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL**, com foco em divulgação de eventos, apresentação do instituto e inscrição do público geral. O site é voltado para dois públicos: patrocinadores e público geral.
 
 ## Stack
 

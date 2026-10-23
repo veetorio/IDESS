@@ -16,7 +16,7 @@
   <artifactId>api</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>Instituto Ettore — API</name>
-  <description>Backend Spring Boot para o site do Instituto Ettore Sebastianini</description>
+  <description>Backend Spring Boot para o site do ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL</description>
 
   <properties>
     <java.version>21</java.version>

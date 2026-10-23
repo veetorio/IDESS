@@ -1,4 +1,4 @@
-# Design — Frontend Ettore Sebastianini Instituto Social e Sustentável
+# Design — Frontend ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL
 
 ## Arquitetura
 

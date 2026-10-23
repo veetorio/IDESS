@@ -1,5 +1,5 @@
 // =============================================
-// Tipos globais — Instituto Ettore Sebastianini
+// Tipos globais — ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL
 // Espelhados do modelo de dados do backend
 // =============================================
 

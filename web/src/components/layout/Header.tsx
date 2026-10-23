@@ -21,7 +21,7 @@ export function Header() {
         <Link
           href="/"
           className="flex shrink-0 items-center gap-3 font-bold text-white transition-opacity hover:opacity-90"
-          aria-label="Instituto Ettore Sebastianini — Página inicial"
+          aria-label="ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL — Página inicial"
         >
           <Image
             src="/logoWhite.png"
@@ -32,9 +32,11 @@ export function Header() {
           />
 
           <span className="hidden leading-tight sm:block">
-            Ettore Sebastianini
-            <span className="block text-xs font-normal text-white/75">
-              Instituto Social e Sustentável
+            ETTORE SEBASTIANINI
+            <span className="block text-[9px] font-normal uppercase text-white/75">
+              Instituto de Desenvolvimento
+              <br />
+              Social Sustentável
             </span>
           </span>
         </Link>

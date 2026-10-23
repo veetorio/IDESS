@@ -23,6 +23,7 @@
 
 # Java / Maven
 **/target/
+/api/uploads/
 
 # misc
 .DS_Store

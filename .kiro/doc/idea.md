@@ -1,6 +1,6 @@
 # Introdução
 
-Olá kiro, Eu gostaria de explicar o projeto, A ideia é desenvolver um site para uma instituição chamada Ettore Sebastianini Instituto Social e Sustentavel na qual querem um site para divulgar seus eventos e ter uma pagina de apresentação do instituto, uma seção para os fundadores da instituição e seus programas e patrocinadores.
+Olá kiro, Eu gostaria de explicar o projeto, A ideia é desenvolver um site para uma instituição chamada ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL na qual querem um site para divulgar seus eventos e ter uma pagina de apresentação do instituto, uma seção para os fundadores da instituição e seus programas e patrocinadores.
 
 # Stack
  - ## Frontend
@@ -35,7 +35,6 @@ Olá kiro, Eu gostaria de explicar o projeto, A ideia é desenvolver um site par
         - 5% : #1370B4
     - tipografia :
         - modernista
-
 
 
 

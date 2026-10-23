@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Cadastrar",
-  description: "Crie sua conta no Instituto Ettore Sebastianini.",
+  description: "Crie sua conta no ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL.",
 };
 
 export default function PaginaCadastro() {
@@ -15,7 +15,7 @@ export default function PaginaCadastro() {
         {/* Cabeçalho */}
         <div className="text-center mb-8 flex flex-col items-center">
           <span>
-            <Image src="/logo.png" alt="Logo do Instituto Ettore Sebastianini" width={64} height={64} />
+            <Image src="/logo.png" alt="Logo do ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL" width={64} height={64} />
           </span>
           <h1 className="text-2xl font-bold text-primary">Crie sua conta</h1>
           <p className="mt-2 text-sm text-neutral-600">

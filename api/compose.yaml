@@ -33,8 +33,12 @@ services:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
       ADMIN_NAME: ${ADMIN_NAME:-Administrador}
       ADMIN_PHONE: ${ADMIN_PHONE:-}
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - evento_imagens:/app/uploads
     ports:
       - "${API_PORT:-8080}:8080"
 
 volumes:
   postgres_data:
+  evento_imagens:

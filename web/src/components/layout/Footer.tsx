@@ -51,9 +51,11 @@ export function Footer() {
                 />
               </span>
               <span className="font-bold leading-tight">
-                Ettore Sebastianini
-                <span className="block text-xs font-normal text-white/70">
-                  Instituto Social e Sustentável
+                ETTORE SEBASTIANINI
+                <span className="block text-[10px] font-normal uppercase text-white/70">
+                  Instituto de Desenvolvimento
+                  <br />
+                  Social Sustentável
                 </span>
               </span>
             </div>
@@ -119,11 +121,11 @@ export function Footer() {
                 className="flex items-center gap-2 text-sm text-white/80 transition-colors hover:text-white"
               >
                 <Phone className="h-4 w-4 shrink-0 text-green" aria-hidden="true" />
-                (11) 99999-9999
+                 (98) 98915-5803
               </a>
               <p className="flex items-start gap-2 text-sm text-white/80">
                 <MapPin className="h-4 w-4 shrink-0 text-green mt-0.5" aria-hidden="true" />
-                São Paulo, SP — Brasil
+                São Luís, MA — Brasil
               </p>
             </address>
           </div>
@@ -132,7 +134,7 @@ export function Footer() {
         {/* Barra inferior */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/20 pt-6 text-xs text-white/60 sm:flex-row">
           <p>
-            © {anoAtual} Instituto Ettore Sebastianini Social e Sustentável.
+            © {anoAtual} ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL.
             Todos os direitos reservados.
           </p>
           <p>

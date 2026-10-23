@@ -13,17 +13,17 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Instituto Ettore Sebastianini",
-    default: "Instituto Ettore Sebastianini",
+    template: "%s | ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL",
+    default: "ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL",
   },
   icons : {
     icon : "/logo.png"
   },
   description:
-    "Instituto Social e Sustentável dedicado a promover eventos, programas sociais e iniciativas de sustentabilidade.",
+    "ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL promove eventos, programas sociais e iniciativas de sustentabilidade.",
   openGraph: {
-    title: "Instituto Ettore Sebastianini",
-    description: "Instituto Social e Sustentável",
+    title: "ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL",
+    description: "ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL",
     locale: "pt_BR",
     type: "website",
   },

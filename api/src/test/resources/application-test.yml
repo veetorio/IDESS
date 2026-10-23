@@ -15,5 +15,9 @@ jwt:
   secret: teste-local-seguro-para-assinatura-jwt-com-256-bits
   expiration-ms: 3600000
 
+app:
+  upload:
+    dir: target/test-uploads
+
 cors:
   allowed-origins: http://localhost:3000

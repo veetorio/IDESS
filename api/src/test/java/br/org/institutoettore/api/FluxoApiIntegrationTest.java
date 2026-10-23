@@ -7,14 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Base64;
 import java.util.UUID;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,6 +34,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 class FluxoApiIntegrationTest {
+    private static final byte[] PNG_TESTE = Base64.getDecoder().decode(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/pZ8AAAAASUVORK5CYII="
+    );
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -55,17 +63,17 @@ class FluxoApiIntegrationTest {
         mockMvc.perform(get("/inscricoes"))
             .andExpect(status().isUnauthorized());
 
-        mockMvc.perform(post("/eventos")
+        mockMvc.perform(multipart("/eventos")
+                .file(parteEvento())
                 .header("Authorization", "Bearer " + tokenParticipante)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(corpoEvento()))
+            )
             .andExpect(status().isForbidden());
 
         String tokenAdmin = autenticar("admin@instituto.test", "SenhaAdminSegura123");
-        String eventoJson = mockMvc.perform(post("/eventos")
+        String eventoJson = mockMvc.perform(multipart("/eventos")
+                .file(parteEvento())
                 .header("Authorization", "Bearer " + tokenAdmin)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(corpoEvento()))
+            )
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.vagasOcupadas").value(0))
             .andReturn()
@@ -126,6 +134,42 @@ class FluxoApiIntegrationTest {
             .andExpect(jsonPath("$.aberto").value(false));
     }
 
+    @Test
+    void criaEventoRecebendoImagensPorMultipartFormData() throws Exception {
+        String tokenAdmin = autenticar("admin@instituto.test", "SenhaAdminSegura123");
+        MockMultipartFile dadosEvento = new MockMultipartFile(
+            "evento",
+            "",
+            MediaType.APPLICATION_JSON_VALUE,
+            """
+                {"nome":"Evento com imagem","descricao":"Descrição do evento",
+                 "vagasTotais":5,"aberto":true}
+                """.getBytes()
+        );
+        MockMultipartFile imagem = new MockMultipartFile(
+            "imagens",
+            "foto.png",
+            MediaType.IMAGE_PNG_VALUE,
+            PNG_TESTE
+        );
+
+        String resposta = mockMvc.perform(multipart("/eventos")
+                .file(dadosEvento)
+                .file(imagem)
+                .header("Authorization", "Bearer " + tokenAdmin))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.imgs.length()").value(1))
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        String caminhoImagem = objectMapper.readTree(resposta).get("imgs").get(0).asText();
+        mockMvc.perform(get(caminhoImagem))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
+            .andExpect(content().bytes(PNG_TESTE));
+    }
+
     private String autenticar(String email, String senha) throws Exception {
         String resposta = mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -141,10 +185,15 @@ class FluxoApiIntegrationTest {
         return json.get("token").asText();
     }
 
-    private String corpoEvento() {
-        return """
-            {"nome":"Evento de Teste","descricao":"Descrição do evento",
-             "imgs":["/fotos/evento.jpeg"],"vagasTotais":1,"aberto":true}
-            """;
+    private MockMultipartFile parteEvento() {
+        return new MockMultipartFile(
+            "evento",
+            "",
+            MediaType.APPLICATION_JSON_VALUE,
+            """
+                {"nome":"Evento de Teste","descricao":"Descrição do evento",
+                 "vagasTotais":1,"aberto":true}
+                """.getBytes()
+        );
     }
 }

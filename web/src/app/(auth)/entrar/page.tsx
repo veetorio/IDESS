@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Entrar",
-  description: "Acesse sua conta no Instituto Ettore Sebastianini.",
+  description: "Acesse sua conta no ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL.",
 };
 
 export default function PaginaLogin() {
@@ -16,7 +16,7 @@ export default function PaginaLogin() {
         {/* Cabeçalho */}
         <div className="text-center mb-8 flex items-center flex-col">
           <span>
-            <Image src="/logo.png" alt="Logo do Instituto Ettore Sebastianini" width={64} height={64} />
+            <Image src="/logo.png" alt="Logo do ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL" width={64} height={64} />
           </span>
           <h1 className="text-2xl font-bold text-primary">Bem-vindo de volta</h1>
           <p className="mt-2 text-sm text-neutral-600">
