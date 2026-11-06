@@ -54,25 +54,24 @@ export default async function PaginaEventos({ searchParams }: PageProps) {
 
   return (
     <div className="min-h-screen bg-base">
-      {/* Cabeçalho da página */}
-      <div className="bg-primary px-6 py-16">
-        <div className="max-w-5xl mx-auto">
-          <span className="text-green-light font-semibold text-sm uppercase tracking-wider">
+      <header className="border-b border-primary/10 bg-white px-5 py-12 sm:px-8 sm:py-16">
+        <div className="mx-auto max-w-6xl">
+          <span className="text-xs font-bold uppercase tracking-[0.18em] text-green-dark">
             Participe
           </span>
-          <h1 className="mt-2 text-3xl md:text-4xl font-bold text-white">
+          <h1 className="mt-3 font-serif text-4xl font-semibold leading-tight text-primary sm:text-5xl">
             Nossos Eventos
           </h1>
-          <p className="mt-4 max-w-xl text-white/80">
+          <p className="mt-4 max-w-2xl leading-7 text-neutral-700">
             Inscreva-se nos nossos eventos e faça parte das iniciativas sociais
             e sustentáveis do ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL.
           </p>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-5xl mx-auto px-6 py-12">
+      <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
         {/* Filtros */}
-        <div className="flex flex-wrap gap-3 mb-8" role="group" aria-label="Filtrar eventos">
+        <div className="mb-8 flex flex-wrap gap-2" role="group" aria-label="Filtrar eventos">
           <Link href="/eventos">
             <Badge
               variant={!aberto ? "primary" : "outline"}
@@ -110,7 +109,7 @@ export default async function PaginaEventos({ searchParams }: PageProps) {
           </div>
         ) : (
           <>
-            <p className="text-sm text-neutral-500 mb-6">
+            <p className="mb-6 text-sm text-neutral-600">
               {dados.totalElements}{" "}
               {dados.totalElements === 1 ? "evento encontrado" : "eventos encontrados"}
             </p>

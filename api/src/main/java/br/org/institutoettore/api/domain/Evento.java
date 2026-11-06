@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -30,6 +31,18 @@ public class Evento {
     @NotBlank(message = "Descrição é obrigatória")
     @Column(nullable = false, columnDefinition = "TEXT")
     private String descricao;
+
+    @NotNull
+    @Column(name = "data_inicio", nullable = false)
+    private LocalDate dataInicio;
+
+    @NotNull
+    @Column(name = "data_fim", nullable = false)
+    private LocalDate dataFim;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "projeto_id")
+    private Projeto projeto;
 
     /**
      * Caminhos/URLs das imagens do evento.

@@ -8,6 +8,21 @@ spring:
     password: ${DB_PASS:postgres}
     driver-class-name: org.postgresql.Driver
 
+  mail:
+    host: ${NEWSLETTER_SMTP_HOST:}
+    port: ${NEWSLETTER_SMTP_PORT:587}
+    username: ${NEWSLETTER_SMTP_USERNAME:}
+    password: ${NEWSLETTER_SMTP_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: ${NEWSLETTER_SMTP_AUTH:true}
+          connectiontimeout: 10000
+          timeout: 10000
+          writetimeout: 10000
+          starttls:
+            enable: ${NEWSLETTER_SMTP_STARTTLS:true}
+
   jpa:
     hibernate:
       ddl-auto: validate
@@ -27,6 +42,7 @@ spring:
 
 server:
   port: ${PORT:8080}
+  forward-headers-strategy: framework
   error:
     include-message: never
     include-binding-errors: never
@@ -41,6 +57,9 @@ cors:
   allowed-origins: ${CORS_ORIGINS:http://localhost:3000}
 
 app:
+  social-login:
+    enabled: ${SOCIAL_LOGIN_ENABLED:false}
+    frontend-url: ${FRONTEND_URL:http://localhost:3000}
   upload:
     dir: ${UPLOAD_DIR:uploads}
   admin:
@@ -48,6 +67,19 @@ app:
     password: ${ADMIN_PASSWORD:}
     nome: ${ADMIN_NAME:Administrador}
     telefone: ${ADMIN_PHONE:}
+  newsletter:
+    email:
+      enabled: ${NEWSLETTER_EMAIL_ENABLED:false}
+      from: ${NEWSLETTER_EMAIL_FROM:}
+  santander:
+    enabled: ${SANTANDER_ENABLED:false}
+    environment: ${SANTANDER_ENVIRONMENT:sandbox}
+    api-base-url: ${SANTANDER_API_BASE_URL:}
+    client-id: ${SANTANDER_CLIENT_ID:}
+    client-secret: ${SANTANDER_CLIENT_SECRET:}
+    certificate-path: ${SANTANDER_CERTIFICATE_PATH:}
+    private-key-path: ${SANTANDER_PRIVATE_KEY_PATH:}
+    pix-key: ${SANTANDER_PIX_KEY:}
 
 logging:
   level:

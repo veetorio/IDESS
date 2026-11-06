@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle, Plus } from "lucide-react";
@@ -9,12 +9,19 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import type { Projeto } from "@/types";
 
 const eventSchema = z.object({
   nome: z.string().trim().min(1, "Informe o nome do evento.").max(150),
   descricao: z.string().trim().min(1, "Informe a descrição."),
+  dataInicio: z.string().min(1, "Informe a data de início."),
+  dataFim: z.string().min(1, "Informe a data de término."),
+  projetoId: z.string(),
   vagasTotais: z.number().int().min(1, "O evento precisa ter pelo menos 1 vaga."),
   aberto: z.boolean(),
+}).refine((valores) => valores.dataFim >= valores.dataInicio, {
+  message: "A data de término não pode ser anterior à data de início.",
+  path: ["dataFim"],
 });
 
 type EventFormValues = z.infer<typeof eventSchema>;
@@ -23,11 +30,23 @@ const TAMANHO_MAXIMO_IMAGEM = 5 * 1024 * 1024;
 
 export function EventForm() {
   const router = useRouter();
-  const inputImagens = useRef<HTMLInputElement>(null);
   const [imagens, setImagens] = useState<File[]>([]);
+  const [chaveInputImagens, setChaveInputImagens] = useState(0);
   const [erroImagens, setErroImagens] = useState<string | null>(null);
   const [erroServidor, setErroServidor] = useState<string | null>(null);
   const [sucesso, setSucesso] = useState<string | null>(null);
+  const [projetos, setProjetos] = useState<Projeto[]>([]);
+  const [erroProjetos, setErroProjetos] = useState<string | null>(null);
+  useEffect(() => {
+    fetch("/api/projetos", { cache: "no-store" })
+      .then(async (resposta) => {
+        if (!resposta.ok) throw new Error("Não foi possível carregar os projetos.");
+        setProjetos(await resposta.json());
+      })
+      .catch((erro: unknown) => {
+        setErroProjetos(erro instanceof Error ? erro.message : "Erro ao carregar projetos.");
+      });
+  }, []);
   const {
     register,
     handleSubmit,
@@ -38,6 +57,9 @@ export function EventForm() {
     defaultValues: {
       nome: "",
       descricao: "",
+      dataInicio: "",
+      dataFim: "",
+      projetoId: "",
       vagasTotais: 1,
       aberto: true,
     },
@@ -73,6 +95,9 @@ export function EventForm() {
             JSON.stringify({
               nome: values.nome,
               descricao: values.descricao,
+              dataInicio: values.dataInicio,
+              dataFim: values.dataFim,
+              projetoId: values.projetoId || null,
               vagasTotais: values.vagasTotais,
               aberto: values.aberto,
             }),
@@ -94,7 +119,7 @@ export function EventForm() {
 
       reset();
       setImagens([]);
-      if (inputImagens.current) inputImagens.current.value = "";
+      setChaveInputImagens((chave) => chave + 1);
       setSucesso("Evento criado com sucesso.");
       router.refresh();
     } catch (erro) {
@@ -144,12 +169,40 @@ export function EventForm() {
         )}
       </div>
 
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label htmlFor="dataInicio">Data de início</Label>
+          <Input id="dataInicio" type="date" erro={errors.dataInicio?.message} {...register("dataInicio")} />
+          {errors.dataInicio && <p className="text-sm text-red-600">{errors.dataInicio.message}</p>}
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="dataFim">Data de término</Label>
+          <Input id="dataFim" type="date" erro={errors.dataFim?.message} {...register("dataFim")} />
+          {errors.dataFim && <p className="text-sm text-red-600">{errors.dataFim.message}</p>}
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="projetoId">Projeto associado (opcional)</Label>
+        <select
+          id="projetoId"
+          className="h-11 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue"
+          {...register("projetoId")}
+        >
+          <option value="">Instituto (sem projeto associado)</option>
+          {projetos.map((projeto) => (
+            <option key={projeto.id} value={projeto.id}>{projeto.nome}</option>
+          ))}
+        </select>
+        {erroProjetos && <p className="text-sm text-red-600" role="alert">{erroProjetos}</p>}
+      </div>
+
       <div className="space-y-2">
         <Label htmlFor="descricao">Descrição</Label>
         <textarea
           id="descricao"
           rows={5}
-          className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm placeholder:text-neutral-500 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue"
           placeholder="Conte os detalhes do evento"
           aria-invalid={Boolean(errors.descricao)}
           aria-describedby={errors.descricao ? "descricao-erro" : undefined}
@@ -165,7 +218,7 @@ export function EventForm() {
       <div className="space-y-2">
         <Label htmlFor="imagens">Imagens do evento (opcional)</Label>
         <Input
-          ref={inputImagens}
+          key={chaveInputImagens}
           id="imagens"
           type="file"
           accept="image/jpeg,image/png,image/gif"

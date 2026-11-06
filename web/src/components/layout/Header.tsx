@@ -7,6 +7,7 @@ const navLinks = [
   { href: "/#sobre", label: "Sobre" },
   { href: "/#fundadores", label: "Fundadores" },
   { href: "/#programas", label: "Programas" },
+  { href: "/projetos", label: "Projetos" },
   { href: "/eventos", label: "Eventos" },
   { href: "/#patrocinadores", label: "Patrocinadores" },
   { href: "/#contato", label: "Contato" },
@@ -14,34 +15,29 @@ const navLinks = [
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 isolate w-full bg-primary shadow-md">
-      <div className="header-art" aria-hidden="true" />
-      <div className="relative z-10 mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
-        {/* Logo / Nome do Instituto */}
+    <header className="sticky top-0 z-40 w-full border-b border-primary/10 bg-white/95 backdrop-blur">
+      <div className="mx-auto flex min-h-[4.75rem] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link
           href="/"
-          className="flex shrink-0 items-center gap-3 font-bold text-white transition-opacity hover:opacity-90"
+          className="flex min-w-0 shrink-0 items-center gap-3 font-bold text-primary transition-opacity hover:opacity-80"
           aria-label="ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL — Página inicial"
         >
           <Image
-            src="/logoWhite.png"
+            src="/logo.png"
             alt=""
             width={40}
             height={40}
-            className="h-10 w-10"
+            className="h-10 w-10 shrink-0"
           />
 
           <span className="hidden leading-tight sm:block">
             ETTORE SEBASTIANINI
-            <span className="block text-[9px] font-normal uppercase text-white/75">
-              Instituto de Desenvolvimento
-              <br />
-              Social Sustentável
+            <span className="mt-1 block text-[9px] font-medium uppercase tracking-wide text-neutral-600">
+              Instituto de Desenvolvimento Social Sustentável
             </span>
           </span>
         </Link>
 
-        {/* Navegação desktop */}
         <nav
           className="hidden items-center gap-1 xl:flex"
           aria-label="Navegação principal"
@@ -51,7 +47,7 @@ export function Header() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="rounded-md px-3 py-2 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                  className="rounded-md px-2.5 py-2 text-[13px] font-semibold text-neutral-700 transition-colors hover:bg-base hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
                   {link.label}
                 </Link>
@@ -60,10 +56,7 @@ export function Header() {
           </ul>
         </nav>
 
-        {/* Ações (login/perfil) — client component separado */}
         <HeaderActions />
-
-        {/* Menu mobile */}
         <MobileMenu />
       </div>
     </header>

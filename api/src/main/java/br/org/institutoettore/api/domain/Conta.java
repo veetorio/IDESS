@@ -43,6 +43,10 @@ public class Conta implements UserDetails {
     @Builder.Default
     private Boolean atividade = true;
 
+    @Column(name = "recebe_newsletter", nullable = false)
+    @Builder.Default
+    private Boolean recebeNewsletter = false;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @Builder.Default

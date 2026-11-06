@@ -65,6 +65,9 @@ public class EventoController {
         EventoRequest evento = new EventoRequest(
             request.nome(),
             request.descricao(),
+            request.dataInicio(),
+            request.dataFim(),
+            request.projetoId(),
             caminhos,
             request.vagasTotais(),
             request.aberto()

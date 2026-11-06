@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { RegisterForm } from "@/components/auth/RegisterForm";
-import Image from "next/image";
+import { AuthFrame } from "@/components/auth/AuthFrame";
 
 export const metadata: Metadata = {
   title: "Cadastrar",
@@ -10,26 +10,14 @@ export const metadata: Metadata = {
 
 export default function PaginaCadastro() {
   return (
-    <div className="min-h-screen bg-base flex items-center justify-center px-6 py-16">
-      <div className="w-full max-w-md">
-        {/* Cabeçalho */}
-        <div className="text-center mb-8 flex flex-col items-center">
-          <span>
-            <Image src="/logo.png" alt="Logo do ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL" width={64} height={64} />
-          </span>
-          <h1 className="text-2xl font-bold text-primary">Crie sua conta</h1>
-          <p className="mt-2 text-sm text-neutral-600">
-            Cadastre-se para participar dos nossos eventos.
-          </p>
-        </div>
-
-        {/* Card do formulário */}
-        <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-8">
-          <Suspense>
-            <RegisterForm />
-          </Suspense>
-        </div>
-      </div>
-    </div>
+    <AuthFrame
+      eyebrow="Faça parte"
+      title="Crie sua conta"
+      description="Cadastre-se para participar dos eventos e acompanhar as iniciativas do Instituto."
+    >
+      <Suspense>
+        <RegisterForm />
+      </Suspense>
+    </AuthFrame>
   );
 }

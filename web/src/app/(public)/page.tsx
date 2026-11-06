@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { EventCard } from "@/components/events/EventCard";
+import { DonationSection } from "@/components/donations/DonationSection";
 import {
   CalendarDays,
   Users,
@@ -11,12 +12,19 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
-import type { Evento, PaginatedResponse } from "@/types";
+import type { Evento, PaginatedResponse, Projeto } from "@/types";
 
 // ISR desabilitado pois cacheComponents está ativo no next.config.ts
 // A busca de eventos recentes usa revalidate na própria chamada de fetch
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+
+const STATUS_PROJETO: Record<Projeto["status"], string> = {
+  EM_ANDAMENTO: "Em andamento",
+  AGENDADO: "Agendado",
+  REALIZADO: "Realizado",
+  SEM_EVENTOS: "Sem eventos associados",
+};
 
 async function buscarEventosRecentes(): Promise<Evento[]> {
   try {
@@ -29,6 +37,29 @@ async function buscarEventosRecentes(): Promise<Evento[]> {
     return data.content;
   } catch {
     return [];
+  }
+}
+
+async function buscarProjetosDestaque(): Promise<{
+  projetos: Projeto[];
+  erro: string | null;
+}> {
+  try {
+    const resposta = await fetch(`${API_URL}/projetos`, { cache: "no-store" });
+    if (!resposta.ok) {
+      return {
+        projetos: [],
+        erro: "Não foi possível carregar os projetos. Tente novamente mais tarde.",
+      };
+    }
+
+    const projetos: Projeto[] = await resposta.json();
+    return { projetos: projetos.slice(0, 3), erro: null };
+  } catch {
+    return {
+      projetos: [],
+      erro: "Não foi possível carregar os projetos. Tente novamente mais tarde.",
+    };
   }
 }
 
@@ -71,84 +102,88 @@ const patrocinadores = [
   { nome: "Patrocinador 5" },
 ];
 
-const imagensDestaque = [
-  "/fotos/back(1).jpeg",
-  "/fotos/WhatsApp Image 2026-10-20 at 19.57.47 (1).jpeg",
-  "/fotos/WhatsApp Image 2026-10-20 at 19.57.47.jpeg",
-];
-
 // =============================================
 // Página
 // =============================================
 
 export default async function HomePage() {
-  const eventosRecentes = await buscarEventosRecentes();
+  const [eventosRecentes, resultadoProjetos] = await Promise.all([
+    buscarEventosRecentes(),
+    buscarProjetosDestaque(),
+  ]);
+  const { projetos, erro: erroProjetos } = resultadoProjetos;
 
   return (
     <>
-      {/* ===== Hero ===== */}
+      {/* ===== Apresentação ===== */}
       <section
         id="inicio"
-        className="relative isolate flex min-h-[90vh] items-center justify-center overflow-hidden bg-primary px-6 py-20"
+        className="overflow-hidden bg-base px-5 py-12 sm:px-8 sm:py-16 lg:px-10 lg:py-20"
       >
-        <div className="absolute inset-0" aria-hidden="true">
-          {imagensDestaque.map((src, index) => (
-            <Image
-              key={src}
-              src={src}
-              alt=""
-              fill
-              priority={index === 0}
-              sizes="100vw"
-              className="hero-slide object-cover object-[50%_45%]"
-              style={{
-                animationDelay: `${index * 4}s`,
-                animationDuration: "12s",
-              }}
-            />
-          ))}
-        </div>
-        <div
-          className="absolute inset-0 bg-gradient-to-t from-primary/80 via-black/35 to-black/30"
-          aria-hidden="true"
-        />
-        <div className="relative z-10 max-w-3xl text-center">
-          <span className="mb-6 inline-block rounded-full bg-green/20 px-4 py-1.5 text-sm font-semibold uppercase tracking-wide text-green-light">
-            ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL
-          </span>
-          <h1 className="text-4xl font-bold leading-tight text-white md:text-6xl">
-            Transformando vidas,{" "}
-            <span className="text-green-light">construindo futuro</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85 md:text-xl">
-            O ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL promove iniciativas sociais e
-            sustentáveis para o desenvolvimento humano e a inclusão social em
-            nossas comunidades.
-          </p>
-          <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
-            <Button variant="success" size="lg" asChild>
-              <Link href="/eventos">
-                <CalendarDays className="h-5 w-5" aria-hidden="true" />
-                Ver eventos
-              </Link>
-            </Button>
-            <Button variant="outline-white" size="lg" asChild>
-              <Link href="#contato">Entre em contato</Link>
-            </Button>
+        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
+          <div className="max-w-2xl">
+            <p className="inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.18em] text-green-dark">
+              <span className="h-px w-8 bg-green" aria-hidden="true" />
+              Instituto de Desenvolvimento Social Sustentável
+            </p>
+            <h1 className="mt-6 font-serif text-4xl font-semibold leading-[1.04] tracking-tight text-primary sm:text-5xl lg:text-7xl">
+              Transformando vidas,{" "}
+              <span className="text-green-dark">construindo futuro.</span>
+            </h1>
+            <p className="mt-6 max-w-xl text-base leading-7 text-neutral-700 sm:text-lg sm:leading-8">
+              Promovemos iniciativas sociais e sustentáveis para o
+              desenvolvimento humano e a inclusão social em nossas comunidades.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Button variant="success" size="lg" asChild>
+                <Link href="/eventos">
+                  <CalendarDays className="h-5 w-5" aria-hidden="true" />
+                  Ver eventos
+                </Link>
+              </Button>
+              <Button variant="outline" size="lg" asChild>
+                <Link href="#sobre">Conheça o Instituto</Link>
+              </Button>
+            </div>
+            <p className="mt-8 border-l-2 border-green pl-4 text-sm leading-6 text-neutral-600">
+              Ações sociais, cultura e sustentabilidade construídas junto com
+              as comunidades.
+            </p>
           </div>
+
+          <figure className="relative mx-auto w-full max-w-2xl lg:mr-0">
+            <div className="relative z-10 aspect-[4/3] overflow-hidden bg-primary/10">
+              <Image
+                src="/fotos/back(1).jpeg"
+                alt="Participantes de uma iniciativa comunitária do Instituto"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 55vw"
+                className="object-cover"
+              />
+            </div>
+            <figcaption className="relative z-10 mt-3 flex items-start justify-between gap-4 border-t border-primary/20 pt-3 text-xs font-medium uppercase tracking-wide text-neutral-600">
+              <span>Presença e desenvolvimento comunitário</span>
+              <span className="shrink-0 text-primary">São Luís · MA</span>
+            </figcaption>
+            <div
+              className="absolute -bottom-3 -left-3 z-0 h-24 w-24 bg-green/20 sm:-bottom-5 sm:-left-5 sm:h-32 sm:w-32"
+              aria-hidden="true"
+            />
+          </figure>
         </div>
       </section>
 
       {/* ===== Sobre ===== */}
       <section
         id="sobre"
-        className="py-20 px-6 bg-base"
+        className="bg-white px-5 py-16 sm:px-8 sm:py-20"
         aria-labelledby="sobre-titulo"
       >
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <span className="text-green font-semibold text-sm uppercase tracking-wider">
+              <span className="text-xs font-bold uppercase tracking-[0.18em] text-green-dark">
                 Quem somos
               </span>
               <h2
@@ -195,11 +230,11 @@ export default async function HomePage() {
       {/* ===== Fundadores ===== */}
       <section
         id="fundadores"
-        className="py-20 px-6 bg-neutral-50"
+        className="bg-base px-5 py-16 sm:px-8 sm:py-20"
         aria-labelledby="fundadores-titulo"
       >
         <div className="max-w-5xl mx-auto text-center">
-          <span className="text-green font-semibold text-sm uppercase tracking-wider">
+          <span className="text-sm font-bold uppercase tracking-[0.16em] text-green-dark">
             As pessoas por trás do instituto
           </span>
           <h2
@@ -216,13 +251,13 @@ export default async function HomePage() {
             {fundadores.map((fundador) => (
               <div
                 key={fundador.nome}
-                className="rounded-xl bg-white border border-neutral-200 p-6 text-center"
+                className="border-t-2 border-primary/20 bg-white p-6 text-left transition-colors hover:border-green"
               >
                 <div
-                  className="w-20 h-20 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center"
+                  className="mb-5 flex h-16 w-16 items-center justify-center bg-primary text-white"
                   aria-hidden="true"
                 >
-                  <span className="text-primary/40 text-2xl font-bold">
+                  <span className="font-serif text-2xl">
                     {fundador.nome.charAt(0)}
                   </span>
                 </div>
@@ -237,12 +272,12 @@ export default async function HomePage() {
       {/* ===== Programas ===== */}
       <section
         id="programas"
-        className="py-20 px-6 bg-base"
+        className="bg-white px-5 py-16 sm:px-8 sm:py-20"
         aria-labelledby="programas-titulo"
       >
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <span className="text-green font-semibold text-sm uppercase tracking-wider">
+            <span className="text-sm font-bold uppercase tracking-[0.16em] text-green-dark">
               Nossas iniciativas
             </span>
             <h2
@@ -256,10 +291,13 @@ export default async function HomePage() {
             {programas.map(({ icone: Icone, titulo, descricao }) => (
               <div
                 key={titulo}
-                className="rounded-xl bg-white border border-neutral-200 p-6 hover:shadow-md transition-shadow"
+                className="border-t-2 border-primary/20 bg-base p-6 transition-colors hover:border-green"
               >
-                <div className="w-12 h-12 rounded-xl bg-green/10 flex items-center justify-center mb-4">
-                  <Icone className="h-6 w-6 text-green" aria-hidden="true" />
+                <div className="mb-5 flex items-center gap-3 text-green-dark">
+                  <Icone className="h-5 w-5" aria-hidden="true" />
+                  <span className="text-xs font-bold uppercase tracking-[0.14em]">
+                    Iniciativa
+                  </span>
                 </div>
                 <h3 className="font-semibold text-primary text-lg">{titulo}</h3>
                 <p className="mt-2 text-sm text-neutral-600 leading-relaxed">
@@ -271,16 +309,127 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ===== Projetos em Destaque ===== */}
+      <section
+        id="projetos"
+        className="bg-base px-5 py-16 sm:px-8 sm:py-20"
+        aria-labelledby="projetos-titulo"
+      >
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <span className="text-sm font-bold uppercase tracking-[0.16em] text-green-dark">
+                Nossas iniciativas
+              </span>
+              <h2
+                id="projetos-titulo"
+                className="mt-2 text-3xl font-bold text-primary md:text-4xl"
+              >
+                Projetos em Destaque
+              </h2>
+              <p className="mt-4 max-w-xl text-neutral-600">
+                Conheça as iniciativas que promovem desenvolvimento e
+                transformação social.
+              </p>
+            </div>
+            <Button variant="outline" asChild>
+              <Link href="/projetos">
+                Ver todos os projetos
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </Button>
+          </div>
+
+          {erroProjetos ? (
+            <p
+              role="alert"
+              className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700"
+            >
+              {erroProjetos}
+            </p>
+          ) : projetos.length === 0 ? (
+            <p className="rounded-2xl border border-dashed border-neutral-300 p-12 text-center text-neutral-600">
+              Nenhum projeto publicado no momento.
+            </p>
+          ) : (
+            <ul className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+              {projetos.map((projeto) => (
+                <li
+                  key={projeto.id}
+                  className="min-w-0"
+                >
+                  <Link
+                    href={`/projetos/${projeto.id}`}
+                    className="group flex h-full flex-col overflow-hidden border border-neutral-200 bg-white transition-colors hover:border-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4"
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden bg-neutral-100">
+                      <Image
+                        src={`${API_URL}${projeto.fotos[0] ?? projeto.logo}`}
+                        alt={projeto.fotos[0] ? projeto.nome : `Logo ${projeto.nome}`}
+                        fill
+                        unoptimized
+                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                        className={
+                          projeto.fotos[0]
+                            ? "object-cover"
+                            : "object-contain bg-white p-8"
+                        }
+                      />
+                    </div>
+                    <div className="flex flex-1 flex-col p-5">
+                      <p
+                        className={`text-xs font-semibold uppercase tracking-wide ${
+                          projeto.status === "EM_ANDAMENTO"
+                            ? "text-green-dark"
+                            : "text-neutral-500"
+                        }`}
+                      >
+                        {STATUS_PROJETO[projeto.status]}
+                      </p>
+                      <h3 className="mt-2 font-serif text-2xl font-semibold leading-tight text-primary">
+                        {projeto.nome}
+                      </h3>
+                      <p className="mt-3 line-clamp-3 flex-1 text-sm leading-6 text-neutral-700">
+                        {projeto.descricao}
+                      </p>
+                      <div className="mt-5 flex items-center justify-between gap-3 border-t border-neutral-200 pt-4">
+                        <span className="inline-flex items-center gap-2 text-sm text-neutral-600">
+                          <Users
+                            className="h-4 w-4 shrink-0 text-green"
+                            aria-hidden="true"
+                          />
+                          {projeto.participantes} participantes
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
+                          Conheça
+                          <ArrowRight
+                            className="h-4 w-4"
+                            aria-hidden="true"
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </section>
+
+      {/* ===== Doações ===== */}
+      <DonationSection />
+
       {/* ===== Eventos Recentes ===== */}
       <section
         id="eventos"
-        className="py-20 px-6 bg-neutral-50"
+        className="bg-white px-5 py-16 sm:px-8 sm:py-20"
         aria-labelledby="eventos-titulo"
       >
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
             <div>
-              <span className="text-green font-semibold text-sm uppercase tracking-wider">
+              <span className="text-sm font-bold uppercase tracking-[0.16em] text-green-dark">
                 Fique por dentro
               </span>
               <h2
@@ -322,16 +471,16 @@ export default async function HomePage() {
       {/* ===== Patrocinadores ===== */}
       <section
         id="patrocinadores"
-        className="py-20 px-6 bg-base"
+        className="bg-base px-5 py-16 sm:px-8 sm:py-20"
         aria-labelledby="patrocinadores-titulo"
       >
         <div className="max-w-5xl mx-auto text-center">
-          <span className="text-green font-semibold text-sm uppercase tracking-wider">
+          <span className="text-sm font-bold uppercase tracking-[0.16em] text-green-dark">
             Quem acredita em nós
           </span>
           <h2
             id="patrocinadores-titulo"
-            className="mt-2 text-3xl md:text-4xl font-bold text-primary mb-12"
+            className="mb-12 mt-3 font-serif text-3xl font-semibold text-primary md:text-4xl"
           >
             Nossos Patrocinadores
           </h2>
@@ -339,7 +488,7 @@ export default async function HomePage() {
             {patrocinadores.map(({ nome }) => (
               <div
                 key={nome}
-                className="w-36 h-16 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center"
+                className="flex h-16 w-36 items-center justify-center border border-neutral-200 bg-white"
                 aria-label={nome}
               >
                 <span className="text-xs text-neutral-400 font-medium">
@@ -354,7 +503,7 @@ export default async function HomePage() {
       {/* ===== Contato ===== */}
       <section
         id="contato"
-        className="py-20 px-6 bg-primary"
+        className="bg-primary px-5 py-16 text-white sm:px-8 sm:py-20"
         aria-labelledby="contato-titulo"
       >
         <div className="max-w-3xl mx-auto text-center">
@@ -363,7 +512,7 @@ export default async function HomePage() {
           </span>
           <h2
             id="contato-titulo"
-            className="mt-2 text-3xl md:text-4xl font-bold text-white"
+            className="mt-3 font-serif text-3xl font-semibold text-white md:text-4xl"
           >
             Entre em Contato
           </h2>

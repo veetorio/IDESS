@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import { AppChrome } from "@/components/layout/AppChrome";
 import { Providers } from "@/components/layout/Providers";
 import "./globals.css";
 
@@ -38,9 +37,7 @@ export default function RootLayout({
     <html lang="pt-BR" className={`${dmSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-base text-neutral-900">
         <Providers>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <AppChrome>{children}</AppChrome>
         </Providers>
       </body>
     </html>

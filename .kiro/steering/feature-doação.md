@@ -1,0 +1,2 @@
+Quero que implemente a feature de doação, funciona da seguinte forma : alguém que esteja interessado em doar para instituição pode doar valores predefinidos (10,20,30,50) ou valor personalizado, e essa feature tem que estar em uma seção na tela principal,quero que use o sdk da santander para isso
+                                                                                                          

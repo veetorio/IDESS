@@ -36,7 +36,7 @@ export function EventGallery({ imagens, nomeEvento }: EventGalleryProps) {
       {/* Imagem principal */}
       <div className="space-y-3">
         <div
-          className="relative aspect-video rounded-xl overflow-hidden bg-primary/10 cursor-pointer"
+          className="relative aspect-video overflow-hidden bg-primary/10 cursor-pointer"
           onClick={() => setLightboxAberto(true)}
           role="button"
           tabIndex={0}
@@ -65,7 +65,7 @@ export function EventGallery({ imagens, nomeEvento }: EventGalleryProps) {
                   anterior();
                 }}
                 aria-label="Imagem anterior"
-                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white hover:bg-black/60 rounded-full"
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 text-white hover:bg-black/80"
               >
                 <ChevronLeft className="h-5 w-5" />
               </Button>
@@ -77,7 +77,7 @@ export function EventGallery({ imagens, nomeEvento }: EventGalleryProps) {
                   proximo();
                 }}
                 aria-label="Próxima imagem"
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white hover:bg-black/60 rounded-full"
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 text-white hover:bg-black/80"
               >
                 <ChevronRight className="h-5 w-5" />
               </Button>
@@ -116,7 +116,7 @@ export function EventGallery({ imagens, nomeEvento }: EventGalleryProps) {
                 aria-label={`Selecionar imagem ${i + 1}`}
                 aria-current={i === indiceAtivo}
                 className={cn(
-                  "relative w-16 h-12 shrink-0 rounded-md overflow-hidden border-2 transition-all",
+                  "relative h-12 w-16 shrink-0 overflow-hidden border-2 transition-all",
                   i === indiceAtivo
                     ? "border-primary"
                     : "border-transparent hover:border-primary/40"

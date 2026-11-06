@@ -59,111 +59,123 @@ export default async function PaginaDetalheEvento({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-base">
-      <div className="max-w-4xl mx-auto px-6 py-10">
-        {/* Voltar */}
-        <Button variant="ghost" size="sm" asChild className="mb-6 -ml-2 text-neutral-600">
+      <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 sm:py-10">
+        <Button variant="ghost" size="sm" asChild className="-ml-3 text-neutral-700">
           <Link href="/eventos">
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Todos os eventos
           </Link>
         </Button>
 
-        {/* Galeria */}
-        {evento.imgs && evento.imgs.length > 0 && (
-          <div className="mb-8">
-            <EventGallery imagens={evento.imgs} nomeEvento={evento.nome} />
-          </div>
-        )}
-
-        {/* Cabeçalho do evento */}
-        <div className="space-y-4 mb-8">
-          <div className="flex flex-wrap items-center gap-3">
-            <Badge variant={evento.aberto ? "success" : "secondary"} className="text-sm px-3 py-1">
+        <header className="border-b border-primary/15 py-8 sm:py-10">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant={evento.aberto ? "success" : "secondary"}>
               {evento.aberto ? "Inscrições abertas" : "Inscrições encerradas"}
             </Badge>
             {restantes === 0 && evento.aberto && (
-              <Badge variant="destructive" className="text-sm px-3 py-1">
-                Vagas esgotadas
-              </Badge>
+              <Badge variant="destructive">Vagas esgotadas</Badge>
             )}
           </div>
-
-          <h1 className="text-2xl md:text-4xl font-bold text-primary">
+          <h1 className="mt-4 max-w-4xl font-serif text-4xl font-semibold leading-tight text-primary sm:text-5xl lg:text-6xl">
             {evento.nome}
           </h1>
-
-          {/* Metadados */}
-          <div className="flex flex-wrap gap-6 text-sm text-neutral-600">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-green" aria-hidden="true" />
-              <time dateTime={evento.criadoEm}>{formatarData(evento.criadoEm)}</time>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-green" aria-hidden="true" />
+          <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm text-neutral-700">
+            <span className="inline-flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-green-dark" aria-hidden="true" />
+              <time dateTime={evento.dataInicio}>
+                {formatarData(`${evento.dataInicio}T12:00:00`)}
+                {evento.dataFim !== evento.dataInicio
+                  ? ` a ${formatarData(`${evento.dataFim}T12:00:00`)}`
+                  : ""}
+              </time>
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <span className="text-green-dark" aria-hidden="true">·</span>
               <span>
-                {evento.vagasOcupadas}/{evento.vagasTotais} vagas •{" "}
-                {restantes === 0 ? (
-                  <span className="text-red-600 font-medium">Esgotado</span>
+                {evento.projetoId ? (
+                  <>
+                    Projeto:{" "}
+                    <Link href={`/projetos/${evento.projetoId}`} className="font-semibold text-primary underline underline-offset-4">
+                      {evento.projetoNome}
+                    </Link>
+                  </>
                 ) : (
-                  <span className="text-green font-medium">
-                    {restantes} restante{restantes !== 1 ? "s" : ""}
-                  </span>
+                  evento.projetoNome || "Evento do Instituto"
                 )}
               </span>
-            </div>
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <Users className="h-4 w-4 text-green-dark" aria-hidden="true" />
+              {evento.vagasOcupadas}/{evento.vagasTotais} vagas
+              <span className={restantes === 0 ? "font-semibold text-red-700" : "font-semibold text-green-dark"}>
+                {restantes === 0
+                  ? "Esgotado"
+                  : `${restantes} restante${restantes !== 1 ? "s" : ""}`}
+              </span>
+            </span>
           </div>
+        </header>
 
-          {/* Barra de progresso de vagas */}
-          <div
-            className="h-2 rounded-full bg-neutral-200 overflow-hidden max-w-xs"
-            role="progressbar"
-            aria-valuenow={evento.vagasOcupadas}
-            aria-valuemin={0}
-            aria-valuemax={evento.vagasTotais}
-            aria-label={`${porcentagem}% das vagas ocupadas`}
-          >
+        <div className="grid gap-10 py-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-14 lg:py-10">
+          <article className="min-w-0">
+            {evento.imgs && evento.imgs.length > 0 && (
+              <div className="mb-10">
+                <EventGallery imagens={evento.imgs} nomeEvento={evento.nome} />
+              </div>
+            )}
+            <section aria-labelledby="sobre-evento-titulo">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-green-dark">
+                Sobre
+              </p>
+              <h2 id="sobre-evento-titulo" className="mt-2 font-serif text-3xl font-semibold text-primary">
+                O encontro
+              </h2>
+              <div className="prose prose-neutral mt-5 max-w-none whitespace-pre-line text-base leading-7 text-neutral-700">
+                {evento.descricao}
+              </div>
+            </section>
+          </article>
+
+          <aside className="h-fit border-t-2 border-primary bg-white p-5 sm:p-6 lg:sticky lg:top-24" aria-labelledby="participar-evento-titulo">
+            <h2 id="participar-evento-titulo" className="font-serif text-2xl font-semibold text-primary">
+              Participe
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-neutral-700">
+              {evento.aberto && restantes > 0
+                ? `Ainda há ${restantes} vaga${restantes !== 1 ? "s" : ""} disponível${restantes !== 1 ? "s" : ""}.`
+                : evento.aberto
+                ? "As vagas foram esgotadas."
+                : "As inscrições para este evento estão encerradas."}
+            </p>
             <div
-              className={`h-full rounded-full ${
-                porcentagem >= 90
-                  ? "bg-red-500"
-                  : porcentagem >= 60
-                  ? "bg-yellow-500"
-                  : "bg-green"
-              }`}
-              style={{ width: `${porcentagem}%` }}
+              className="mt-5 h-2 overflow-hidden bg-neutral-200"
+              role="progressbar"
+              aria-valuenow={evento.vagasOcupadas}
+              aria-valuemin={0}
+              aria-valuemax={evento.vagasTotais}
+              aria-label={`${porcentagem}% das vagas ocupadas`}
+            >
+              <div
+                className={`h-full ${
+                  porcentagem >= 90
+                    ? "bg-red-700"
+                    : porcentagem >= 60
+                    ? "bg-amber-600"
+                    : "bg-green"
+                }`}
+                style={{ width: `${porcentagem}%` }}
+              />
+            </div>
+            <p className="mt-2 text-xs text-neutral-600">
+              {evento.vagasOcupadas} de {evento.vagasTotais} vagas preenchidas
+            </p>
+            <EnrollButton
+              eventoId={evento.id}
+              aberto={evento.aberto}
+              vagasOcupadas={evento.vagasOcupadas}
+              vagasTotais={evento.vagasTotais}
             />
-          </div>
-        </div>
-
-        {/* Divisor */}
-        <hr className="border-neutral-200 mb-8" />
-
-        {/* Descrição */}
-        <div className="mb-10">
-          <h2 className="text-xl font-semibold text-primary mb-4">Sobre o evento</h2>
-          <div className="prose prose-neutral max-w-none text-neutral-700 leading-relaxed whitespace-pre-line">
-            {evento.descricao}
-          </div>
-        </div>
-
-        {/* Botão de inscrição */}
-        <div className="bg-white rounded-2xl border border-neutral-200 p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-primary mb-2">
-            Participar deste evento
-          </h2>
-          <p className="text-sm text-neutral-600 mb-4">
-            {evento.aberto && restantes > 0
-              ? `Ainda há ${restantes} vaga${restantes !== 1 ? "s" : ""} disponível${restantes !== 1 ? "s" : ""}. Garanta a sua!`
-              : evento.aberto
-              ? "As vagas foram esgotadas."
-              : "As inscrições para este evento estão encerradas."}
-          </p>
-          <EnrollButton
-            eventoId={evento.id}
-            aberto={evento.aberto}
-            vagasOcupadas={evento.vagasOcupadas}
-            vagasTotais={evento.vagasTotais}
-          />
+          </aside>
         </div>
       </div>
     </div>

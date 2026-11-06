@@ -3,6 +3,7 @@ package br.org.institutoettore.api.config;
 import br.org.institutoettore.api.exception.ErroApi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -73,7 +75,10 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(
         HttpSecurity http,
-        DaoAuthenticationProvider authenticationProvider
+        DaoAuthenticationProvider authenticationProvider,
+        ObjectProvider<ClientRegistrationRepository> clientRegistrationRepositories,
+        LoginSocialSuccessHandler loginSocialSuccessHandler,
+        LoginSocialFailureHandler loginSocialFailureHandler
     ) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
@@ -112,15 +117,41 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/auth/**", "/health").permitAll()
+                .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/eventos", "/eventos/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/projetos", "/projetos/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/eventos").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/eventos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/projetos").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/projetos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/projetos/**").hasRole("ADMIN")
+                .requestMatchers("/newsletter/admin", "/newsletter/admin/**").hasRole("ADMIN")
+                .requestMatchers("/newsletter/preferencia", "/newsletter/preferencia/**")
+                    .hasRole("COMMON")
+                .requestMatchers(HttpMethod.GET, "/newsletter").hasAnyRole("COMMON", "ADMIN")
                 .requestMatchers(HttpMethod.POST, "/inscricoes").hasRole("COMMON")
                 .requestMatchers("/inscricoes/**").authenticated()
                 .anyRequest().denyAll()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        ClientRegistrationRepository clientRegistrations =
+            clientRegistrationRepositories.getIfAvailable();
+        if (clientRegistrations != null) {
+            http.oauth2Login(oauth2 -> oauth2
+                .authorizationEndpoint(endpoint -> endpoint
+                    .authorizationRequestResolver(
+                        new FrontendAuthorizationRequestResolver(clientRegistrations)
+                    )
+                    .authorizationRequestRepository(
+                        new FrontendAuthorizationRequestRepository()
+                    )
+                )
+                .successHandler(loginSocialSuccessHandler)
+                .failureHandler(loginSocialFailureHandler)
+            );
+        }
         return http.build();
     }
 

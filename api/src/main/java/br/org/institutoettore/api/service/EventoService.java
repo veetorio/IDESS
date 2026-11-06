@@ -1,12 +1,14 @@
 package br.org.institutoettore.api.service;
 
 import br.org.institutoettore.api.domain.Evento;
+import br.org.institutoettore.api.domain.Projeto;
 import br.org.institutoettore.api.dto.PaginaResponse;
 import br.org.institutoettore.api.dto.evento.EventoRequest;
 import br.org.institutoettore.api.dto.evento.EventoResponse;
 import br.org.institutoettore.api.exception.RequisicaoInvalidaException;
 import br.org.institutoettore.api.exception.RecursoNaoEncontradoException;
 import br.org.institutoettore.api.repository.EventoRepository;
+import br.org.institutoettore.api.repository.ProjetoRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -22,9 +24,15 @@ import java.util.UUID;
 public class EventoService {
     private final EventoRepository eventoRepository;
     private final DtoMapper dtoMapper;
+    private final ProjetoRepository projetoRepository;
 
-    public EventoService(EventoRepository eventoRepository, DtoMapper dtoMapper) {
+    public EventoService(
+        EventoRepository eventoRepository,
+        ProjetoRepository projetoRepository,
+        DtoMapper dtoMapper
+    ) {
         this.eventoRepository = eventoRepository;
+        this.projetoRepository = projetoRepository;
         this.dtoMapper = dtoMapper;
     }
 
@@ -54,10 +62,14 @@ public class EventoService {
 
     @Transactional
     public EventoResponse criar(EventoRequest request) {
+        validarPeriodo(request);
         validarImagens(request.imgs());
         Evento evento = Evento.builder()
             .nome(request.nome().trim())
             .descricao(request.descricao().trim())
+            .dataInicio(request.dataInicio())
+            .dataFim(request.dataFim())
+            .projeto(buscarProjeto(request.projetoId()))
             .imgs(imagens(request.imgs()))
             .vagasTotais(request.vagasTotais())
             .vagasOcupadas(0)
@@ -68,6 +80,7 @@ public class EventoService {
 
     @Transactional
     public EventoResponse atualizar(UUID id, EventoRequest request) {
+        validarPeriodo(request);
         validarImagens(request.imgs());
         Evento evento = eventoRepository.findByIdParaAtualizar(id)
             .orElseThrow(() -> new RecursoNaoEncontradoException("Evento não encontrado."));
@@ -78,10 +91,27 @@ public class EventoService {
         }
         evento.setNome(request.nome().trim());
         evento.setDescricao(request.descricao().trim());
+        evento.setDataInicio(request.dataInicio());
+        evento.setDataFim(request.dataFim());
+        evento.setProjeto(buscarProjeto(request.projetoId()));
         evento.setImgs(imagens(request.imgs()));
         evento.setVagasTotais(request.vagasTotais());
         evento.setAberto(request.aberto() == null || request.aberto());
         return dtoMapper.paraEventoResponse(evento);
+    }
+
+    private Projeto buscarProjeto(UUID projetoId) {
+        if (projetoId == null) return null;
+        return projetoRepository.findById(projetoId)
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Projeto não encontrado."));
+    }
+
+    private void validarPeriodo(EventoRequest request) {
+        if (request.dataFim().isBefore(request.dataInicio())) {
+            throw new RequisicaoInvalidaException(
+                "A data de término não pode ser anterior à data de início."
+            );
+        }
     }
 
     private List<String> imagens(List<String> imagens) {

@@ -36,12 +36,12 @@ export function Footer() {
 
   return (
     <footer className="bg-primary text-white" aria-label="Rodapé">
-      <div className="max-w-6xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+      <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-16">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-[1.3fr_0.7fr_1fr] md:gap-16">
           {/* Coluna 1 — Institucional */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white p-1">
+            <div className="mb-5 flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center bg-white p-1">
                 <Image
                   src="/logo.png"
                   alt=""
@@ -50,7 +50,7 @@ export function Footer() {
                   className="h-full w-full object-contain"
                 />
               </span>
-              <span className="font-bold leading-tight">
+              <span className="font-bold leading-tight tracking-wide">
                 ETTORE SEBASTIANINI
                 <span className="block text-[10px] font-normal uppercase text-white/70">
                   Instituto de Desenvolvimento
@@ -60,13 +60,13 @@ export function Footer() {
               </span>
             </div>
 
-            <p className="text-sm leading-relaxed text-white/70">
+            <p className="max-w-sm text-sm leading-6 text-white/80">
               Transformando vidas através de iniciativas sociais e sustentáveis,
               promovendo o desenvolvimento humano e a inclusão social.
             </p>
 
             {/* Redes sociais */}
-            <div className="flex items-center gap-3 mt-6">
+            <div className="mt-6 flex items-center gap-2">
               {redesSociais.map(({ href, label, icon: Icon }) => (
                 <a
                   key={href}
@@ -74,7 +74,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="w-9 h-9 rounded-full bg-base/10 flex items-center justify-center hover:bg-green transition-colors"
+                  className="flex h-11 w-11 items-center justify-center border border-white/25 text-white transition-colors hover:border-green-light hover:bg-white/10"
                 >
                   <Icon className="h-4 w-4" aria-hidden="true" />
                 </a>
@@ -84,16 +84,16 @@ export function Footer() {
 
           {/* Coluna 2 — Links do site */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-white/60">
+            <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.16em] text-green-light">
               Navegação
             </h3>
             <nav aria-label="Links do rodapé">
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {linksSite.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-white/80 transition-colors hover:text-white"
+                      className="text-sm text-white/80 underline-offset-4 transition-colors hover:text-white hover:underline"
                     >
                       {link.label}
                     </Link>
@@ -105,7 +105,7 @@ export function Footer() {
 
           {/* Coluna 3 — Contato */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-white/60">
+            <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.16em] text-green-light">
               Contato
             </h3>
             <address className="not-italic space-y-3">
@@ -132,18 +132,12 @@ export function Footer() {
         </div>
 
         {/* Barra inferior */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/20 pt-6 text-xs text-white/60 sm:flex-row">
+        <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-white/20 pt-6 text-xs leading-5 text-white/70 sm:flex-row sm:items-center">
           <p>
             © {anoAtual} ETTORE SEBASTIANINI INSTITUTO DE DESENVOLVIMENTO SOCIAL SUSTENTÁVEL.
             Todos os direitos reservados.
           </p>
-          <p>
-            Desenvolvido com{" "}
-            <span aria-label="amor" role="img">
-              💚
-            </span>{" "}
-            para um mundo melhor.
-          </p>
+          <p>Compromisso com um futuro mais justo e sustentável.</p>
         </div>
       </div>
     </footer>

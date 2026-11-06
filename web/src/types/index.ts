@@ -22,11 +22,54 @@ export interface Evento {
   id: string;
   nome: string;
   descricao: string;
+  dataInicio: string;
+  dataFim: string;
+  projetoId: string | null;
+  projetoNome: string | null;
   imgs: string[];
   vagasOcupadas: number;
   vagasTotais: number;
   aberto: boolean;
   criadoEm: string;
+}
+
+export type StatusProjeto =
+  | "EM_ANDAMENTO"
+  | "AGENDADO"
+  | "REALIZADO"
+  | "SEM_EVENTOS";
+
+export interface Projeto {
+  id: string;
+  nome: string;
+  descricao: string;
+  participantes: number;
+  logo: string;
+  fotos: string[];
+  criadoEm: string;
+  status: StatusProjeto;
+  ultimoEvento: Evento | null;
+}
+
+export interface Newsletter {
+  id: string;
+  titulo: string;
+  resumo: string;
+  conteudo: string;
+  criadoEm: string;
+  publicadoEm: string;
+}
+
+export interface NewsletterPreference {
+  email: string;
+  recebeNewsletter: boolean;
+}
+
+export interface NewsletterPublicationResponse {
+  newsletter: Newsletter;
+  emailsEnviados: number;
+  emailsFalhos: number;
+  envioConfigurado: boolean;
 }
 
 export interface Inscricao {

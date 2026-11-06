@@ -9,10 +9,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 public interface EventoRepository extends JpaRepository<Evento, UUID> {
     Page<Evento> findByAberto(Boolean aberto, Pageable pageable);
+
+    List<Evento> findByProjetoIdOrderByDataInicioDescCriadoEmDesc(UUID projetoId);
 
     @Query(value = "SELECT * FROM eventos WHERE id = :id FOR UPDATE", nativeQuery = true)
     Optional<Evento> findByIdParaAtualizar(@Param("id") UUID id);

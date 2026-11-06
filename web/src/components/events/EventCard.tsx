@@ -19,7 +19,7 @@ export function EventCard({ evento }: EventCardProps) {
     vagasOcupadas,
     vagasTotais,
     aberto,
-    criadoEm,
+    dataInicio,
   } = evento;
 
   const restantes = vagasRestantes(vagasOcupadas, vagasTotais);
@@ -27,11 +27,11 @@ export function EventCard({ evento }: EventCardProps) {
   const imagemPrincipal = imgs?.[0];
 
   return (
-    <Card className="overflow-hidden hover:shadow-md transition-shadow group">
+    <Card className="group overflow-hidden rounded-none border-x-0 border-t-0 transition-colors hover:border-green">
       {/* Imagem */}
       <Link
         href={`/eventos/${id}`}
-        className="block aspect-video relative bg-primary/10 overflow-hidden"
+        className="relative block aspect-[4/3] overflow-hidden bg-primary/10"
         tabIndex={-1}
         aria-hidden="true"
       >
@@ -40,7 +40,7 @@ export function EventCard({ evento }: EventCardProps) {
             src={imagemPrincipal}
             alt={nome}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
@@ -53,7 +53,7 @@ export function EventCard({ evento }: EventCardProps) {
         )}
 
         {/* Badge de status sobreposto à imagem */}
-        <div className="absolute top-3 left-3">
+        <div className="absolute left-3 top-3">
           {!aberto || semVagas ? (
             <Badge variant="muted">
               {semVagas && aberto ? "Vagas esgotadas" : "Encerrado"}
@@ -64,27 +64,27 @@ export function EventCard({ evento }: EventCardProps) {
         </div>
       </Link>
 
-      <CardContent className="p-4">
+      <CardContent className="px-0 py-5">
         {/* Título */}
         <Link href={`/eventos/${id}`}>
-          <h3 className="font-semibold text-primary text-lg leading-tight hover:underline line-clamp-2">
+          <h3 className="line-clamp-2 font-serif text-2xl font-semibold leading-tight text-primary hover:underline">
             {nome}
           </h3>
         </Link>
 
         {/* Descrição resumida */}
-        <p className="mt-1.5 text-sm text-neutral-600 line-clamp-2">
+        <p className="mt-2 line-clamp-2 text-sm leading-6 text-neutral-700">
           {descricao}
         </p>
 
         {/* Metadados */}
-        <div className="mt-4 flex flex-wrap gap-3 text-sm text-neutral-500">
+        <div className="mt-4 flex flex-wrap gap-3 text-sm text-neutral-600">
           <span className="flex items-center gap-1.5">
             <CalendarDays
               className="h-4 w-4 text-green shrink-0"
               aria-hidden="true"
             />
-            {formatarData(criadoEm)}
+            {formatarData(`${dataInicio}T12:00:00`)}
           </span>
           <span className="flex items-center gap-1.5">
             <Users
@@ -104,7 +104,7 @@ export function EventCard({ evento }: EventCardProps) {
 
         {/* Barra de progresso de vagas */}
         <div
-          className="mt-3 h-1.5 rounded-full bg-neutral-100 overflow-hidden"
+          className="mt-3 h-1.5 overflow-hidden bg-neutral-100"
           role="progressbar"
           aria-valuenow={vagasOcupadas}
           aria-valuemin={0}

@@ -42,6 +42,14 @@ export function LoginForm({ redirect = "/" }: LoginFormProps) {
   const searchParams = useSearchParams();
   // Prop tem prioridade; fallback para searchParam
   const destino = redirect !== "/" ? redirect : (searchParams.get("redirect") ?? "/");
+  const erroSocial = searchParams.get("erro");
+  const googleLoginHabilitado =
+    process.env.NEXT_PUBLIC_GOOGLE_LOGIN_ENABLED === "true";
+  const facebookLoginHabilitado =
+    process.env.NEXT_PUBLIC_FACEBOOK_LOGIN_ENABLED === "true";
+  const apiUrl =
+    (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080").replace(/\/+$/, "");
+  const queryRedirect = `?redirect=${encodeURIComponent(destino)}`;
 
   const [senhaVisivel, setSenhaVisivel] = useState(false);
   const [erroServidor, setErroServidor] = useState<string | null>(null);
@@ -82,6 +90,18 @@ export function LoginForm({ redirect = "/" }: LoginFormProps) {
           {erroServidor}
         </div>
       )}
+      {!erroServidor && erroSocial && (
+        <div
+          role="alert"
+          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+        >
+          {erroSocial === "email-nao-verificado"
+            ? "Não foi possível vincular automaticamente: o provedor não confirmou o e-mail. Entre com sua senha."
+            : erroSocial === "login-social-indisponivel"
+              ? "Não foi possível concluir o login social. Confira os dados da conta ou use seu e-mail e senha."
+              : "A autenticação social foi cancelada ou não pôde ser concluída. Tente novamente."}
+        </div>
+      )}
 
       {/* E-mail */}
       <div className="space-y-1.5">
@@ -105,13 +125,6 @@ export function LoginForm({ redirect = "/" }: LoginFormProps) {
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label htmlFor="senha">Senha</Label>
-          <button
-            type="button"
-            className="text-xs text-blue hover:underline"
-            tabIndex={-1}
-          >
-            Esqueci minha senha
-          </button>
         </div>
         <div className="relative">
           <Input
@@ -156,12 +169,48 @@ export function LoginForm({ redirect = "/" }: LoginFormProps) {
         {isSubmitting ? "Entrando..." : "Entrar"}
       </Button>
 
+      {(googleLoginHabilitado || facebookLoginHabilitado) && (
+        <>
+          <div className="relative py-1">
+            <div className="absolute inset-0 flex items-center" aria-hidden="true">
+              <span className="w-full border-t border-neutral-200" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-white px-3 text-xs text-neutral-500">
+                ou continue com
+              </span>
+            </div>
+          </div>
+
+          <div className={`grid gap-3 ${googleLoginHabilitado && facebookLoginHabilitado ? "sm:grid-cols-2" : ""}`}>
+            {googleLoginHabilitado && (
+              <a
+                href={`${apiUrl}/oauth2/authorization/google${queryRedirect}`}
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-neutral-300 bg-white px-4 text-sm font-semibold text-neutral-800 transition-colors hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                <span className="font-bold text-base" aria-hidden="true">G</span>
+                Google
+              </a>
+            )}
+            {facebookLoginHabilitado && (
+              <a
+                href={`${apiUrl}/oauth2/authorization/facebook${queryRedirect}`}
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-neutral-300 bg-white px-4 text-sm font-semibold text-neutral-800 transition-colors hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                <span className="text-base font-bold text-blue" aria-hidden="true">f</span>
+                Facebook
+              </a>
+            )}
+          </div>
+        </>
+      )}
+
       {/* Link para cadastro */}
       <p className="text-center text-sm text-neutral-600">
         Não tem uma conta?{" "}
         <Link
           href="/cadastrar"
-          className="text-primary font-medium hover:underline"
+          className="font-semibold text-blue underline-offset-4 hover:underline"
         >
           Cadastre-se
         </Link>
